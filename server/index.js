@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const { json } = require("body-parser");
 const User = require("./models/user");
 const config = require("./config/key");
+const { auth } = require("./middleware/auth");
 
 mongoose
   .connect(config.mongoURI, {
@@ -41,6 +42,8 @@ app.post("/api/users/login", (req, res) => {
         message: "Auth failed, email not found.",
       });
     }
+    //compare the passwords
+    //generate new token for user
 
     user.comparePassword(req.body.password, (err, isMatch) => {
       if (!isMatch) {
@@ -51,19 +54,28 @@ app.post("/api/users/login", (req, res) => {
       }
       user.generateToken((err, user) => {
         if (err) return res.status(400).send(err);
-        res.cookie("_auth", user.token).status(200).json({
+        res.cookie("x_token", user.token).status(200).json({
           loginSuccess: true,
           message: "Auth successed.",
         });
       });
     });
   });
-  //compare the passwords
-  //generate new token for user
 });
 
 app.get("/", (req, res) => {
   return res.json("hey");
+});
+
+app.get("/api/users/auth", auth, (req, res) => {
+  res.status(200).json({
+    _id: req._id,
+    isAuth: true,
+    email: req.user.email,
+    firstName: req.user.firstName,
+    lastName: req.user.lastName,
+    role: req.user.role,
+  });
 });
 app.listen(port);
 console.log(`app is listening in port:${port} `);

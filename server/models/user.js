@@ -48,6 +48,18 @@ userSchema.pre("save", function (next) {
   }
 });
 
+userSchema.statics.findByToken = function (token, cb) {
+  var user = this;
+  console.log("in findByToken in user");
+  jwt.verify(token, "secret", function (err, decoded) {
+    console.log("id of user is: ", decoded);
+    user.findOne({ _id: decoded, token: token }, function (err, user) {
+      if (err) return cb(err);
+      cb(null, user);
+    });
+  });
+};
+
 userSchema.methods.comparePassword = function (plainPassword, cb) {
   bcrypt.compare(plainPassword, this.password, function (err, isMatched) {
     if (err) return cb(err);
