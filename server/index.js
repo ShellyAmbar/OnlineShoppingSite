@@ -22,7 +22,7 @@ app.use(cookieParser());
 
 app.post("/api/users/register", (req, res) => {
   const user = new User(req.body);
-  return res.json("hello");
+
   user.save((err, doc) => {
     if (err) return res.json({ success: false, err });
     res.status(200).json({
@@ -34,7 +34,7 @@ app.post("/api/users/register", (req, res) => {
 
 app.post("/api/users/login", (req, res) => {
   //find the email in DB
-  User.findOne({ email: res.body.email }, (err, user) => {
+  User.findOne({ email: req.body.email }, (err, user) => {
     if (!user) {
       return res.json({
         loginSuccess: false,
@@ -49,6 +49,13 @@ app.post("/api/users/login", (req, res) => {
           message: "Auth failed, password not matched.",
         });
       }
+      user.generateToken((err, user) => {
+        if (err) return res.status(400).send(err);
+        res.cookie("_auth", user.token).status(200).json({
+          loginSuccess: true,
+          message: "Auth successed.",
+        });
+      });
     });
   });
   //compare the passwords
