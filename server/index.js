@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-app.post("/api/users/register", (req, res) => {
+app.post("/api/user/register", (req, res) => {
   const user = new User(req.body);
 
   user.save((err, doc) => {
@@ -33,7 +33,7 @@ app.post("/api/users/register", (req, res) => {
   });
 });
 
-app.post("/api/users/login", (req, res) => {
+app.post("/api/user/login", (req, res) => {
   //find the email in DB
   User.findOne({ email: req.body.email }, (err, user) => {
     if (!user) {
@@ -67,7 +67,7 @@ app.get("/", (req, res) => {
   return res.json("hey");
 });
 
-app.get("/api/users/auth", auth, (req, res) => {
+app.get("/api/user/auth", auth, (req, res) => {
   res.status(200).json({
     _id: req._id,
     isAuth: true,
@@ -75,6 +75,12 @@ app.get("/api/users/auth", auth, (req, res) => {
     firstName: req.user.firstName,
     lastName: req.user.lastName,
     role: req.user.role,
+  });
+});
+app.get("/api/user/logout", auth, (req, res) => {
+  User.findByIdAndUpdate({ _id: req.user._id }, { token: "" }, (err, doc) => {
+    if (err) return res.json({ success: false, err });
+    return res.status(200).send({ success: true });
   });
 });
 app.listen(port);
