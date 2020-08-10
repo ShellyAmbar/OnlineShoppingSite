@@ -83,5 +83,6 @@ app.get("/api/user/logout", auth, (req, res) => {
     return res.status(200).send({ success: true });
   });
 });
+port = process.env.PORT || 5000;
 app.listen(port);
 console.log(`app is listening in port:${port} `);
