@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
@@ -83,6 +83,7 @@ app.get("/api/user/logout", auth, (req, res) => {
     return res.status(200).send({ success: true });
   });
 });
-port = process.env.PORT || 5000;
-app.listen(port);
-console.log(`app is listening in port:${port} `);
+
+app.listen(port, () => {
+  console.log(`app is listening in port:${port} `);
+});
