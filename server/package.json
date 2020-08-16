@@ -22,6 +22,7 @@
     "mongoose": "^5.9.27"
   },
   "devDependencies": {
+    "http-proxy-middleware": "^1.0.5",
     "nodemon": "^2.0.4"
   }
 }
