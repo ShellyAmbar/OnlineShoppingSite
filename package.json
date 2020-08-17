@@ -13,7 +13,7 @@
   },
   "scripts": {
     "backend": "nodemon server/index.js",
-    "client": "npm run front --prefix client",
+    "client": "npm run start --prefix client",
     "dev": "concurrently \"npm run backend \"  \"npm run start --prefix client\""
   },
   "repository": {
